@@ -36,7 +36,9 @@ interface State {
 
 const initialState: State = {
     grid: {
-        width: 25, height: 25, tileSize: 25,
+        width: 25,
+        height: 25,
+        tileSize: 25,
     },
     snake: [point(5, 5)],
     snakeColor: "#5ea345",
@@ -87,7 +89,7 @@ const nextSnake = (state: State): State =>
         snake: [...setTail(state), nextStep(state)],
     }
 
-const nextApple = (state: State): State =>
+const nextFruit = (state: State): State =>
     R.equals(nextStep(state), state.fruit) ? {
         ...state,
         fruit: point(random(state.grid.width), random(state.grid.width)),
@@ -95,7 +97,7 @@ const nextApple = (state: State): State =>
     } : state;
 
 const nextState = (state: State): State => {
-    return R.pipe(nextApple, nextSnake)(state);
+    return R.pipe(nextFruit, nextSnake)(state);
 }
 
 const setDirection = (key: Key | undefined) => (state: State) => key ? ({
