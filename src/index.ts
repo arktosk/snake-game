@@ -70,6 +70,13 @@ const draw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, { fruitC
 
 const random = (range: number): number => Math.floor(Math.random() * range);
 
+/** Checks if given point is same as given array of points. */
+const isEmptyField = (occupiedFields: Point[]) => (nextPoint: Point): boolean => R.compose(R.not, R.any(R.equals(nextPoint)))(occupiedFields);
+
+const randomPoint = ({width, height}: {width: number; height: number}) => point(random(width), random(height))
+
+const randomPointOnEmptyField = (grid: {width: number; height: number}, snake: Point[]) => R.until(isEmptyField(snake), () => randomPoint(grid))(randomPoint(grid));
+
 const edge = (value: number, range: number) => value < 0 ? range : value % range;
 
 const nextStep = ({ snake, move, grid }: State): Point => point(
@@ -92,7 +99,7 @@ const nextSnake = (state: State): State =>
 const nextFruit = (state: State): State =>
     R.equals(nextStep(state), state.fruit) ? {
         ...state,
-        fruit: point(random(state.grid.width), random(state.grid.width)),
+        fruit: randomPointOnEmptyField(state.grid, state.snake),
         snakeLength: state.snakeLength + 1,
     } : state;
 
