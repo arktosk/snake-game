@@ -39,10 +39,10 @@ const initialState: State = {
         width: 25, height: 25, tileSize: 25,
     },
     snake: [point(5, 5)],
-    snakeColor: "#111111",
+    snakeColor: "#5ea345",
     snakeLength: 5,
     fruit: point(10, 5),
-    fruitColor: "#ff00fa",
+    fruitColor: "#f21616",
     move: DIRECTIONS.ArrowLeft,
 }
 
