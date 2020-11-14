@@ -1,12 +1,12 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-module.exports = {
-    mode: "development",
-    devtool: "inline-source-map",
+module.exports = (env) => ({
+    mode: env.production ? 'production' : 'development',
+    devtool: env.production ? 'hidden-source-map' : 'eval',
     entry: ["./src/main.css", "./src/index.ts"],
     output: {
-        filename: "[name].js?[hash]",
+        filename: "[name].js?[fullhash]",
     },
     devServer: {
         hot: true,
@@ -15,9 +15,14 @@ module.exports = {
         extensions: [".ts", ".js"],
     },
     module: {
-        rules: [
-            { test: /\.ts$/, loader: "ts-loader" },
-            { test: /\.css$/, use: ["style-loader", "css-loader"] },
+        rules: [{
+                test: /\.ts$/,
+                loader: "ts-loader",
+            },
+            {
+                test: /\.css$/,
+                use: ["style-loader", "css-loader"],
+            },
         ],
     },
     plugins: [
@@ -26,4 +31,4 @@ module.exports = {
             title: "The Snake",
         }),
     ],
-};
+});

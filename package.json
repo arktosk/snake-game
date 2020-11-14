@@ -4,8 +4,8 @@
   "description": "Simple snake game based on overment tutorial (https://www.youtube.com/watch?v=RE1ie09-j5g).",
   "private": true,
   "scripts": {
-    "start": "webpack serve --mode development --env development --open \"chrome\"",
-    "build": "webpack"
+    "start": "webpack serve --env development --open \"chrome\"",
+    "build": "webpack --env production"
   },
   "keywords": [],
   "author": {
