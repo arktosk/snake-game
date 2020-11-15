@@ -16,13 +16,24 @@ module.exports = (env) => ({
     },
     module: {
         rules: [{
-                test: /\.ts$/,
+                test: /\.ts$/i,
                 loader: "ts-loader",
             },
             {
-                test: /\.css$/,
+                test: /\.css$/i,
                 use: ["style-loader", "css-loader"],
             },
+            {
+                test: /\.png$/i,
+                use: [
+                  {
+                    loader: 'url-loader',
+                    options: {
+                      encoding: 'base64',
+                    },
+                  },
+                ],
+              },
         ],
     },
     plugins: [

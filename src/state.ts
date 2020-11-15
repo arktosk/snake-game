@@ -3,6 +3,7 @@ import * as R from "ramda";
 import { DIRECTIONS } from "./directions";
 import { edge } from "./math";
 import { Point, point, randomPointOnEmptyField } from "./point";
+import { Sprite } from "./sprite";
 
 export interface State {
     grid: {
@@ -15,6 +16,7 @@ export interface State {
     snakeLength: number;
     fruit: Point;
     fruitColor: string;
+    fruitSprite: Sprite | null;
     move: Point;
 }
 
@@ -29,8 +31,11 @@ export const initialState: State = {
     snakeLength: 5,
     fruit: point(10, 5),
     fruitColor: "#f21616",
+    fruitSprite: null,
     move: DIRECTIONS.ArrowLeft,
 }
+
+export const initializeStateWith = (stateOverrides: Partial<State>): Promise<State> => Promise.resolve({...initialState, ...stateOverrides});
 
 const nextStep = ({ snake, move, grid }: State): Point => point(
     edge((R.last(snake) as Point).x + move.x, grid.width),
