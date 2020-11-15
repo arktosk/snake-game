@@ -1,6 +1,6 @@
 # 🐍 Snake game
 
-Simple snake game based on [overment](https://overment.com/) [YouToube tutorial](https://www.youtube.com/watch?v=RE1ie09-j5g).
+Simple snake game based on[YouToube tutorial (🇵🇱)](https://www.youtube.com/watch?v=RE1ie09-j5g) created by [overment](https://overment.com/).
 
 [See demo](https://arktosk.github.io/snake-game/)
 
