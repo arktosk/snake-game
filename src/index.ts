@@ -6,6 +6,10 @@ interface Point {
 
 const point = (x: number, y: number): Point => ({x, y});
 
+const inverse = (x: number) => x === 0 ? 0 : x * -1;
+
+const invertPoint = (point: Point): Point => R.map(inverse, point);;
+
 enum Key {
     ArrowLeft = "ArrowLeft",
     ArrowUp = "ArrowUp",
@@ -107,7 +111,7 @@ const nextState = (state: State): State => {
     return R.pipe(nextFruit, nextSnake)(state);
 }
 
-const setDirection = (key: Key | undefined) => (state: State) => key ? ({
+const setDirection = (key: Key | undefined) => (state: State) => key && !R.equals(state.move, invertPoint(DIRECTIONS[key])) ? ({
     ...state,
     move: DIRECTIONS[key],
 }) : state;
