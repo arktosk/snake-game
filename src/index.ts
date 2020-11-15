@@ -1,58 +1,8 @@
 import * as R from 'ramda';
-interface Point {
-    x: number,
-    y: number,
-}
 
-const point = (x: number, y: number): Point => ({x, y});
-
-const inverse = (x: number) => x === 0 ? 0 : x * -1;
-
-const invertPoint = (point: Point): Point => R.map(inverse, point);;
-
-enum Key {
-    ArrowLeft = "ArrowLeft",
-    ArrowUp = "ArrowUp",
-    ArrowRight = "ArrowRight",
-    ArrowDown = "ArrowDown",
-}
-
-const DIRECTIONS: Record<Key, Point> = {
-    [Key.ArrowLeft]: point(-1, 0),
-    [Key.ArrowUp]: point(0, -1),
-    [Key.ArrowRight]: point(1, 0),
-    [Key.ArrowDown]: point(0, 1),
-}
-
-interface State {
-    grid: {
-        width: number;
-        height: number;
-        tileSize: number;
-    };
-    snake: Point[];
-    snakeColor: string;
-    snakeLength: number;
-    fruit: Point;
-    fruitColor: string;
-    move: Point;
-}
-
-const initialState: State = {
-    grid: {
-        width: 25,
-        height: 25,
-        tileSize: 25,
-    },
-    snake: [point(5, 5)],
-    snakeColor: "#5ea345",
-    snakeLength: 5,
-    fruit: point(10, 5),
-    fruitColor: "#f21616",
-    move: DIRECTIONS.ArrowLeft,
-}
-
-let state: State = R.clone(initialState);
+import { Key, DIRECTIONS, isOppositeDirection } from './directions';
+import { Point } from './point';
+import { State, initialState, nextState } from './state';
 
 const setColor = (ctx: CanvasRenderingContext2D, color: string): void => {
     ctx.fillStyle = color;
@@ -72,49 +22,13 @@ const draw = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, { fruitC
     snake.forEach((point: Point) => drawPoint(ctx, point, grid));
 };
 
-const random = (range: number): number => Math.floor(Math.random() * range);
-
-/** Checks if given point is same as given array of points. */
-const isEmptyField = (occupiedFields: Point[]) => (nextPoint: Point): boolean => R.compose(R.not, R.any(R.equals(nextPoint)))(occupiedFields);
-
-const randomPoint = ({width, height}: {width: number; height: number}) => point(random(width), random(height))
-
-const randomPointOnEmptyField = (grid: {width: number; height: number}, snake: Point[]) => R.until(isEmptyField(snake), () => randomPoint(grid))(randomPoint(grid));
-
-const edge = (value: number, range: number) => value < 0 ? range : value % range;
-
-const nextStep = ({ snake, move, grid }: State): Point => point(
-    edge((R.last(snake) as Point).x + move.x, grid.width),
-    edge((R.last(snake) as Point).y + move.y, grid.height),
-);
-
-const setTail = ({ snake, snakeLength}: State) => R.drop(Math.abs(snake.length > snakeLength ? snake.length - snakeLength : 0), snake);
-
-const nextSnake = (state: State): State => 
-    R.find(R.equals(nextStep(state)))(state.snake) ? {
-        ...state,
-        snake: [point(5, 5)],
-        snakeLength: 5,
-    } : {
-        ...state,
-        snake: [...setTail(state), nextStep(state)],
-    }
-
-const nextFruit = (state: State): State =>
-    R.equals(nextStep(state), state.fruit) ? {
-        ...state,
-        fruit: randomPointOnEmptyField(state.grid, state.snake),
-        snakeLength: state.snakeLength + 1,
-    } : state;
-
-const nextState = (state: State): State => {
-    return R.pipe(nextFruit, nextSnake)(state);
-}
-
-const setDirection = (key: Key | undefined) => (state: State) => key && !R.equals(state.move, invertPoint(DIRECTIONS[key])) ? ({
+const setDirection = (key: Key | undefined) => (state: State) => key && !isOppositeDirection(state.move, DIRECTIONS[key]) ? ({
     ...state,
     move: DIRECTIONS[key],
 }) : state;
+
+
+let state: State = R.clone(initialState);
 
 const canvas: HTMLCanvasElement = document.createElement("canvas");
 canvas.width = state.grid.width * state.grid.tileSize;
