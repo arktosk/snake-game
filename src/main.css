@@ -12,4 +12,6 @@ canvas {
     background: #ffffff;
     border: 1px solid #111111;
     border-radius: 3px;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
